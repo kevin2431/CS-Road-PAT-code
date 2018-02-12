@@ -1,1 +1,28 @@
+#include <iostream>
+#include <cstdio>
+#include <stack>
+using namespace std;
+//建立一个字符栈，先考虑正负号，
+//末尾取余，遇三个则添加一个‘，’，最后一个不用添加
 
+int main() {
+    int a,b,num=0;
+    scanf("%d%d",&a,&b);
+    int sum=a+b;
+    stack<char> q;
+    if(sum<0) {printf("-");sum=-sum;}
+    if(sum==0) printf("0\n");
+    while(sum){
+        q.push(sum%10+'0');
+        sum/=10;
+        num++;
+        if(num%3==0) q.push(',');
+    }
+    if(num%3==0&&!q.empty()) q.pop();   //刚好位数为3的倍数
+    while(!q.empty()){
+        printf("%c",q.top());
+        q.pop();
+    }
+
+    return 0;
+}
