@@ -1,0 +1,75 @@
+//有几种测例无法通过，dfs有问题
+#include<cstdio>
+#include <iostream>
+#include<vector>
+#include <algorithm>
+using namespace std;
+const int INF=1000000;
+const int maxn=505;
+int dis[505],visit[505]={0};
+int graph[maxn][maxn];
+vector<int> pre[maxn];
+int n,m,st,ed;
+int road=0,num=0;
+
+void    dijstra(int s){     //dijstra算法记录pre数组
+    fill(dis,dis+maxn,INF);
+    dis[s]=0;
+    for (int i = 0; i <n ; ++i) {
+        int u=-1;
+        int MIN=INF;
+        for (int j = 0; j <n ; ++j) {
+            if(visit[j]==0&&dis[j]<MIN) {
+                u = j;
+                MIN = dis[j];
+            }
+        }
+        if(u==-1) return;
+        visit[u]=1;
+        for (int v = 0; v <n ; ++v) {
+            if(visit[v]==0&&graph[u][v]!=INF){
+                if(dis[u]+graph[u][v]<dis[v]){
+                    dis[v]=dis[u]+graph[u][v];
+                    pre[v].clear();
+                    pre[v].push_back(u);
+                }else if(dis[u]+graph[u][v]==dis[v])
+                    pre[v].push_back(u);
+            }
+        }
+    }
+}
+
+bool flag[maxn]={0};
+int team[maxn]={0};
+void dfs(int v){
+    if(flag[v]==0){
+        num+=team[v];
+        flag[v]=1;
+    }
+    if(v==st){
+        road++;
+        return;
+    }
+    for (int i = 0; i <pre[v].size() ; ++i) {
+        dfs(pre[v][i]);
+    }
+
+}
+
+int main() {
+    scanf("%d%d%d%d",&n,&m,&st,&ed);
+    for (int i = 0; i <n ; ++i) {
+        scanf("%d",&team[i]);
+    }
+    fill(graph[0],graph[0]+maxn*maxn,INF);  //初始化
+    int a,b,c;
+    for (int i = 0; i <m ; ++i) {
+        scanf("%d%d%d",&a,&b,&c);
+        graph[a][b]=c;
+        graph[b][a]=c;
+    }
+    dijstra(st);
+    dfs(ed);
+    printf("%d %d\n",road,num);
+    return 0;
+}
